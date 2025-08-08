@@ -1,9 +1,17 @@
 {
   "web": {
-    "baseUrl": "http://localhost/mantisbt-1.2.20/"
+    "baseUrl": "http://localhost/mantisbt-1.2.20/",
+    "username": "administrator",
+    "password": "root"
   },
   "webadmin": {
     "username": "administrator",
     "password": "root"
+  },
+  "db": {
+    "host": "localhost",
+    "name": "bugtracker",
+    "user": "root",
+    "password": ""
   }
 }
