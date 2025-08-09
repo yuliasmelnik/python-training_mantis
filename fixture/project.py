@@ -6,8 +6,7 @@ class ProjectHelper:
 
     def open_project_page(self):
         wd = self.app.wd
-        if not (wd.current_url.endswith("manage_proj_page.php")
-                and len(wd.find_elements_by_xpath("//option[""@value='Create New Project']") > 0)):
+        if not (wd.current_url.endswith("manage_proj_page.php")):
             wd.find_element_by_link_text("Manage").click()
             wd.find_element_by_link_text("Manage Projects").click()
 
@@ -19,8 +18,6 @@ class ProjectHelper:
         wd.find_element_by_name("name").clear()
         wd.find_element_by_name("name").send_keys(project.name)
         wd.find_element_by_name("status").click()
-        #wd.find_element_by_name("status").clear()
-        #wd.find_element_by_name("status").send_keys(project.status)
         wd.find_element_by_xpath("//select[@name='status']/option[@value='"+project.status+"']").click()
         wd.find_element_by_name("description").click()
         wd.find_element_by_name("description").clear()
@@ -28,9 +25,9 @@ class ProjectHelper:
         wd.find_element_by_xpath("//input[@value='Add Project']").click()
         self.return_to_project_page()
 
+
     def return_to_project_page(self):
         wd = self.app.wd
-        if not (wd.current_url.endswith("manage_proj_page.php")
-                and len(wd.find_elements_by_xpath("//option[""@value='Create New Project']") > 0)):
+        if not (wd.current_url.endswith("manage_proj_page.php")):
             wd.find_element_by_link_text("Manage").click()
             wd.find_element_by_link_text("Manage Projects").click()
