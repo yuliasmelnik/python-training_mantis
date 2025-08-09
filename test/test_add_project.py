@@ -4,7 +4,10 @@ import os
 
 project_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
+from generator.projects import *
+
 def test_add_project(app, db):
+    #exec(open(os.path.join(project_dir, "generator/projects.py")).read())
     file = (os.path.join(project_dir, 'projects.xlsx'))
     xl = CreateObject("Excel.Application")
     xl.Visible = 1
