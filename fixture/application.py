@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from selenium import webdriver
+from fixture.james import JamesHelper
 from fixture.session import SessionHelper
 from fixture.project import ProjectHelper
 
@@ -16,6 +17,7 @@ class Application:
         else:
             raise ValueError("Unrecoqnized browser %s" % browser)
         self.session = SessionHelper(self)
+        self.james = JamesHelper(self)
         self.project = ProjectHelper(self)
         self.base_url = base_url
 
