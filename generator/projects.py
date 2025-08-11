@@ -12,8 +12,8 @@ except getopt.GetoptError as err:
     getopt.usage()
     sys.exit(2)
 
-n = 10
-f = "projects.xlsx"
+n = 5
+f = "data/projects.xlsx"
 
 for o, a in opts:
     if o == "-n":

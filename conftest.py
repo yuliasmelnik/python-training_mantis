@@ -1,9 +1,13 @@
+import importlib
 import pytest
 import json
 import os.path
 import ftputil
+from comtypes.client import CreateObject
+
 from fixture.application import Application
 from fixture.db import DbFixture
+from model.project import Project
 
 fixture = None
 target = None
@@ -27,10 +31,10 @@ def config(request):
 def app(request, config):
     global fixture
     browser = request.config.getoption("--browser")
-    #webadmin_config = config['webadmin']
+    webadmin_config = config['webadmin']
     if fixture is None or not fixture.is_valid():
         fixture = Application(browser=browser, config=config)
-        #fixture.session.ensure_login(username=webadmin_config['username'], password=webadmin_config['password'])
+        fixture.session.ensure_login(username=webadmin_config['username'], password=webadmin_config['password'])
     return fixture
 
 
@@ -79,3 +83,36 @@ def stop(request):
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="firefox")
     parser.addoption("--target", action="store", default="target.json")
+
+project_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+def pytest_generate_tests(metafunc):
+    for fixture in metafunc.fixturenames:
+        if fixture.startswith("data_"):
+            testdata = load_from_module(fixture[5:])
+            metafunc.parametrize(fixture, testdata, ids=[str(x) for x in testdata])
+        elif fixture.startswith("xlsx_"):
+            testdata = load_from_xlsx(fixture[5:])
+            metafunc.parametrize(fixture, testdata, ids=[str(x) for x in testdata])
+
+def load_from_module(module):
+    return importlib.import_module("data.%s" % module).testdata
+
+from generator.projects import *
+
+def load_from_xlsx(file):
+    f = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data\\%s.xlsx" % file)
+    xl = CreateObject("Excel.Application")
+    xl.Visible = 1
+    wb = xl.Workbooks.Open(f)
+    worksheet = wb.Sheets[1]
+    xlsx_projects = []
+    for row in range(1, 11):
+        name = worksheet.Cells[row, 1].Value()
+        status = worksheet.Cells[row, 2].Value()
+        status_formatted = "{:f}".format(status).rstrip('0').rstrip('.')
+        description = worksheet.Cells[row, 3].Value()
+        project = Project(name=name, status=status_formatted, description=description, id="")
+        xlsx_projects.append(project)
+    return xlsx_projects
+    xl.Quit()
