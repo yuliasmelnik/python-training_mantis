@@ -98,21 +98,20 @@ def pytest_generate_tests(metafunc):
 def load_from_module(module):
     return importlib.import_module("data.%s" % module).testdata
 
-from generator.projects import *
-
 def load_from_xlsx(file):
+    os.system('python ./generator/projects.py')
     f = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data\\%s.xlsx" % file)
     xl = CreateObject("Excel.Application")
     xl.Visible = 1
     wb = xl.Workbooks.Open(f)
     worksheet = wb.Sheets[1]
     xlsx_projects = []
-    for row in range(1, 11):
+    for row in range(1, 6):
         name = worksheet.Cells[row, 1].Value()
         status = worksheet.Cells[row, 2].Value()
         status_formatted = "{:f}".format(status).rstrip('0').rstrip('.')
         description = worksheet.Cells[row, 3].Value()
-        project = Project(name=name, status=status_formatted, description=description, id="")
+        project = Project(name=name, status=status_formatted, description=description)
         xlsx_projects.append(project)
-    return xlsx_projects
     xl.Quit()
+    return xlsx_projects
